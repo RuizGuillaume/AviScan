@@ -24,6 +24,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Generate .env for actions
+      run: |
+        echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" > .env
+        echo "SENDER_EMAIL_PASSWORD=${{ secrets.SENDER_EMAIL_PASSWORD }}" >> .env
+        echo "RECIPIENT_EMAIL=${{ secrets.RECIPIENT_EMAIL }}" >> .env
+        echo "KAGGLE_USERNAME=${{ secrets.KAGGLE_USERNAME }}" >> .env
+        echo "KAGGLE_KEY=${{ secrets.KAGGLE_KEY }}" >> .env
+        echo "API_KEY=${{ secrets.API_KEY }}" >> .env
+        echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+        echo "API_USERNAME=${{ secrets.API_USERNAME }}" >> .env
+        echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+        
     - name: Create kaggle.json file
       run: |
         echo '{"username":"${{ secrets.KAGGLE_USERNAME }}","key":"${{ secrets.KAGGLE_KEY }}"}' > kaggle.json
