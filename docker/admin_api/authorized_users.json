@@ -1,0 +1,9 @@
+{
+    "admin": [true, "admin"],
+    "Yoni": [true, "toto"],
+    "Guillaume": [true, "toto"],
+    "Maxence": [true, "titeuf"],
+    "toto": [true, "toto"],
+    "user": [false, "user"],
+    "Tintin": [false, "milou"]
+}

@@ -1,0 +1,17 @@
+# Fichiers racine
+.env
+kaggle.json
+api.log
+# Dossiers
+/data/
+/tempImage/
+/mlruns/
+/logs/
+/models/
+venv/
+streamlit_env/
+__pycache__/
+# Exceptions
+!README.md
+!**/README.md
+!/docker/training/mlruns/

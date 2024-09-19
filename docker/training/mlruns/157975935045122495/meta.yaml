@@ -1,0 +1,6 @@
+artifact_location: file:///home/app/volume_data/mlruns/157975935045122495
+creation_time: 1724484220471
+experiment_id: '157975935045122495'
+last_update_time: 1724484220471
+lifecycle_stage: active
+name: Bird Classification Training

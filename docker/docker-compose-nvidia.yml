@@ -1,0 +1,152 @@
+services:
+
+  user_api:
+    build:
+      context: ./user_api
+      dockerfile: Dockerfile
+    image: ruizguillaume/aviscan:user_api
+    container_name: user_api
+    environment:
+      - API_KEY=${API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - SENDER_EMAIL=${SENDER_EMAIL}
+      - SENDER_EMAIL_PASSWORD=${SENDER_EMAIL_PASSWORD}
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
+    ports:
+      - target: 5000
+        published: 5000
+        protocol: tcp
+        mode: host
+    volumes:
+      - main_volume:/home/app/volume_data
+
+  admin_api:
+    build:
+      context: ./admin_api
+      dockerfile: Dockerfile
+    image: ruizguillaume/aviscan:admin_api
+    container_name: admin_api
+    environment:
+      - API_KEY=${API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - SENDER_EMAIL=${SENDER_EMAIL}
+      - SENDER_EMAIL_PASSWORD=${SENDER_EMAIL_PASSWORD}
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
+    ports:
+      - target: 5100
+        published: 5100
+        protocol: tcp
+        mode: host
+    volumes:
+      - main_volume:/home/app/volume_data
+
+  inference:
+    build:
+      context: ./inference
+      dockerfile: Dockerfile
+    image: ruizguillaume/aviscan:inference
+    container_name: inference
+    environment:
+      - SENDER_EMAIL=${SENDER_EMAIL}
+      - SENDER_EMAIL_PASSWORD=${SENDER_EMAIL_PASSWORD}
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
+    volumes:
+      - main_volume:/home/app/volume_data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  training:
+    build:
+      context: ./training
+      dockerfile: Dockerfile
+    image: ruizguillaume/aviscan:training
+    container_name: training
+    environment:
+      - SENDER_EMAIL=${SENDER_EMAIL}
+      - SENDER_EMAIL_PASSWORD=${SENDER_EMAIL_PASSWORD}
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
+    volumes:
+      - main_volume:/home/app/volume_data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  preprocessing:
+    build:
+      context: ./preprocessing
+      dockerfile: Dockerfile
+    image: ruizguillaume/aviscan:preprocessing
+    container_name: preprocessing
+    environment:
+      - SENDER_EMAIL=${SENDER_EMAIL}
+      - SENDER_EMAIL_PASSWORD=${SENDER_EMAIL_PASSWORD}
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
+      - KAGGLE_KEY=${KAGGLE_KEY}
+      - KAGGLE_USERNAME=${KAGGLE_USERNAME}
+    volumes:
+      - main_volume:/home/app/volume_data
+
+  monitoring:
+    build:
+      context: ./monitoring
+      dockerfile: Dockerfile
+    image: ruizguillaume/aviscan:monitoring
+    container_name: monitoring
+    environment:
+      - SENDER_EMAIL=${SENDER_EMAIL}
+      - SENDER_EMAIL_PASSWORD=${SENDER_EMAIL_PASSWORD}
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
+    volumes:
+      - main_volume:/home/app/volume_data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  mlflowui:
+    build:
+      context: ./mlflowui
+      dockerfile: Dockerfile
+    image: ruizguillaume/aviscan:mlflowui
+    container_name: mlflowui
+    ports:
+      - target: 5200
+        published: 5200
+        protocol: tcp
+        mode: host
+    volumes:
+      - main_volume:/home/app/volume_data
+
+  streamlit:
+    build:
+      context: ./streamlit
+      dockerfile: Dockerfile
+    image: ruizguillaume/aviscan:streamlit
+    container_name: streamlit
+    environment:
+      - STREAMLIT_SERVER_PORT=5300
+      - SENDER_EMAIL=${SENDER_EMAIL}
+      - SENDER_EMAIL_PASSWORD=${SENDER_EMAIL_PASSWORD}
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
+    ports:
+      - target: 5300
+        published: 5300
+        protocol: tcp
+        mode: host
+    volumes:
+      - main_volume:/home/app/volume_data
+
+volumes:
+  main_volume:

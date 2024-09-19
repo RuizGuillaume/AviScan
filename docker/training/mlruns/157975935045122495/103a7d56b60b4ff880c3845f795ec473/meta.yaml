@@ -1,0 +1,15 @@
+artifact_uri: file:///home/app/volume_data/mlruns/157975935045122495/103a7d56b60b4ff880c3845f795ec473/artifacts
+end_time: 1725536698091
+entry_point_name: ''
+experiment_id: '157975935045122495'
+lifecycle_stage: active
+run_id: 103a7d56b60b4ff880c3845f795ec473
+run_name: brawny-colt-876
+run_uuid: 103a7d56b60b4ff880c3845f795ec473
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1725534103187
+status: 3
+tags: []
+user_id: root

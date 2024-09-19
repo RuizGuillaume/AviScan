@@ -1,0 +1,15 @@
+artifact_uri: file:///home/app/volume_data/mlruns/157975935045122495/ae0627ef9a214c4db3bbad1472a966c8/artifacts
+end_time: 1725194267925
+entry_point_name: ''
+experiment_id: '157975935045122495'
+lifecycle_stage: active
+run_id: ae0627ef9a214c4db3bbad1472a966c8
+run_name: handsome-calf-982
+run_uuid: ae0627ef9a214c4db3bbad1472a966c8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1725190861430
+status: 3
+tags: []
+user_id: root

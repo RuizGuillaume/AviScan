@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    # runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Create kaggle.json file
+      run: |
+        echo '{"username":"${{ secrets.KAGGLE_USERNAME }}","key":"${{ secrets.KAGGLE_KEY }}"}' > kaggle.json
+        chmod 400 kaggle.json
+
+    - name: Docker images tags listing
+      id: set-tags
+      run: |
+        echo "DOCKER_IMAGES=user_api admin_api inference training preprocessing monitoring mlflowui streamlit" >> $GITHUB_ENV
+
+    - name: Pull Docker images
+      run: |
+        for docker_image in $DOCKER_IMAGES; do
+          echo "Pulling ruizguillaume/aviscan:${docker_image}"
+          docker pull ruizguillaume/aviscan:${docker_image}
+          if [ "$(docker images -q ruizguillaume/aviscan:${docker_image} 2> /dev/null)" == "" ]; then
+            echo "Docker image ruizguillaume/aviscan:${docker_image} not found !"
+            exit 1
+          else
+            echo "Docker image ruizguillaume/aviscan:${docker_image} pulled successfully !"
+            docker image rm -f ruizguillaume/aviscan:${docker_image}
+          fi
+        done
+
+    - name: Run unit tests
+      run: |
+        python -m unittest discover -v -s tests/unit
+    - name: Data folder suppression
+      run: |
+        if [ -d "./data" ]; then
+          rm -rf ./data/*
+        else
+          echo "Le répertoire 'data' n'existe pas"
+          exit 1
+        fi
+    - name: Execute pipeline script
+      run: |
+        python ./scripts/pipeline.py --test_dataset_mode True
+
+    - name: Run integration tests
+      run: |
+        python -m unittest discover -v -s tests/integration
+
+    - name: Run Flake8
+      run: |
+        flake8 .
